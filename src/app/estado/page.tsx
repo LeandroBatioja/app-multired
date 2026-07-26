@@ -16,7 +16,7 @@ export default function EstadoPage() {
     setLoading(true);
     try {
       const [filesData, stats] = await Promise.all([
-        filesApi.list(),
+        filesApi.listAll(),
         filesApi.storageStats(),
       ]);
       setFiles(filesData);
