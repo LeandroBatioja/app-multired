@@ -77,15 +77,15 @@ export default function CompartidoPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Compartido</h2>
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Compartido</h2>
 
-      <div className="flex gap-2 border-b border-gray-200">
+      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
         <button
           onClick={() => setTab('received')}
           className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
             tab === 'received'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
         >
           Compartidos conmigo ({sharedWithMe.length})
@@ -94,8 +94,8 @@ export default function CompartidoPage() {
           onClick={() => setTab('given')}
           className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
             tab === 'given'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
         >
           Que yo compartí ({myShared.length})
@@ -111,27 +111,27 @@ export default function CompartidoPage() {
           {tab === 'received' && (
             <div className="space-y-4">
               {sharedWithMe.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-500">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
                   No hay archivos compartidos contigo
                 </div>
               ) : (
                 sharedWithMe.map((item) => (
-                  <div key={item.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                  <div key={item.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                     <div className="p-4">
                       <div className="flex items-start gap-4">
                         <FileThumbnail file={item} onClick={() => setPreviewFile(item)} />
                         <div className="flex-1 min-w-0">
                           <h4
-                            className="font-medium text-gray-800 truncate hover:text-blue-600 cursor-pointer transition-colors"
+                            className="font-medium text-gray-800 dark:text-gray-100 truncate hover:text-blue-600 cursor-pointer transition-colors"
                             onClick={() => setPreviewFile(item)}
                           >
                             {item.name}
                           </h4>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Compartido por <span className="font-medium text-gray-700">{item.shared_by}</span> · {item.permission === 'editor' ? 'Editor' : 'Visualizador'}
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Compartido por <span className="font-medium text-gray-700 dark:text-gray-200">{item.shared_by}</span> · {item.permission === 'editor' ? 'Editor' : 'Visualizador'}
                           </p>
                           {item.size > 0 && (
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                               {formatSize(item.size)}
                             </p>
                           )}
@@ -139,7 +139,7 @@ export default function CompartidoPage() {
                         <div className="flex items-center gap-2 flex-shrink-0">
                           <button
                             onClick={() => setPreviewFile(item)}
-                            className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -149,7 +149,7 @@ export default function CompartidoPage() {
                           </button>
                           <a
                             href={filesApi.getDownloadUrl(item.id)}
-                            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-800 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -168,30 +168,30 @@ export default function CompartidoPage() {
           {tab === 'given' && (
             <div className="space-y-4">
               {myShared.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-500">
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
                   No has compartido archivos aún
                 </div>
               ) : (
                 myShared.map((item) => (
-                  <div key={item.file_id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                  <div key={item.file_id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                     <div className="p-4">
                       <div className="flex items-start gap-4">
                         <FileThumbnail file={{ id: item.file_id, name: item.file_name, extension: item.extension }} onClick={() => setPreviewFile({ id: item.file_id, name: item.file_name, extension: item.extension })} />
                         <div className="flex-1 min-w-0">
                           <h4
-                            className="font-medium text-gray-800 truncate hover:text-blue-600 cursor-pointer transition-colors"
+                            className="font-medium text-gray-800 dark:text-gray-100 truncate hover:text-blue-600 cursor-pointer transition-colors"
                             onClick={() => setPreviewFile({ id: item.file_id, name: item.file_name, extension: item.extension })}
                           >
                             {item.file_name}
                           </h4>
                           <div className="flex flex-wrap gap-2 mt-2">
                             {item.shared_with.map((person) => (
-                              <div key={person.share_id} className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full">
+                              <div key={person.share_id} className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-full">
                                 <span className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
                                   {person.name[0]}
                                 </span>
-                                <span className="text-sm text-gray-700">{person.name}</span>
-                                <span className="text-xs text-gray-400">({person.permission})</span>
+                                <span className="text-sm text-gray-700 dark:text-gray-200">{person.name}</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">({person.permission})</span>
                                 <button
                                   onClick={() => handleRevoke(person.share_id)}
                                   className="text-red-500 hover:text-red-700 text-xs font-medium ml-1"
@@ -205,7 +205,7 @@ export default function CompartidoPage() {
                         <div className="flex items-center gap-2 flex-shrink-0">
                           <a
                             href={filesApi.getDownloadUrl(item.file_id)}
-                            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-800 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -252,10 +252,10 @@ function FileThumbnail({ file, onClick }: { file: { id: number; name: string; ex
     return (
       <div
         onClick={onClick}
-        className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
+        className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
       >
         {ext === 'pdf' ? (
-          <div className="w-full h-full bg-red-50 flex items-center justify-center">
+          <div className="w-full h-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
@@ -272,20 +272,20 @@ function FileThumbnail({ file, onClick }: { file: { id: number; name: string; ex
   }
 
   const iconColors: Record<string, string> = {
-    xlsx: 'text-green-600 bg-green-50',
-    xls: 'text-green-600 bg-green-50',
-    pptx: 'text-orange-500 bg-orange-50',
-    ppt: 'text-orange-500 bg-orange-50',
-    txt: 'text-gray-500 bg-gray-50',
-    doc: 'text-blue-600 bg-blue-50',
-    docx: 'text-blue-600 bg-blue-50',
-    zip: 'text-yellow-600 bg-yellow-50',
-    rar: 'text-yellow-600 bg-yellow-50',
-    mp3: 'text-purple-500 bg-purple-50',
-    mp4: 'text-pink-500 bg-pink-50',
+    xlsx: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
+    xls: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
+    pptx: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
+    ppt: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
+    txt: 'text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800',
+    doc: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
+    docx: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
+    zip: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
+    rar: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
+    mp3: 'text-purple-500 bg-purple-50 dark:bg-purple-900/30',
+    mp4: 'text-pink-500 bg-pink-50 dark:bg-pink-900/30',
   };
 
-  const colorClass = iconColors[ext] || 'text-gray-400 bg-gray-50';
+  const colorClass = iconColors[ext] || 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800';
 
   return (
     <div className={`w-16 h-16 flex-shrink-0 rounded-lg flex items-center justify-center ${colorClass}`}>

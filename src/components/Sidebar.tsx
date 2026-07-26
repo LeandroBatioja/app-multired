@@ -55,7 +55,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex-shrink-0">
+    <aside className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 min-h-screen flex-shrink-0 transition-colors">
       <nav className="p-4">
         <ul className="space-y-1">
           {navItems.map((item) => {
@@ -67,10 +67,10 @@ export default function Sidebar() {
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive
                       ? 'bg-blue-600 text-white font-medium'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
                   }`}
                 >
-                  <span className={isActive ? 'text-white' : 'text-gray-500'}>
+                  <span className={isActive ? 'text-white' : 'text-gray-500 dark:text-gray-500'}>
                     {item.icon}
                   </span>
                   {item.name}

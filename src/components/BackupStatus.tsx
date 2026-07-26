@@ -4,8 +4,8 @@ export default function BackupStatus({ locations }: { locations: number }) {
   return (
     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg ${
       locations >= 2
-        ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-        : 'bg-amber-50 border border-amber-200 text-amber-700'
+        ? 'bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400'
+        : 'bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 text-amber-700 dark:text-amber-400'
     }`}>
       {locations >= 2 ? (
         <>

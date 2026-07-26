@@ -6,16 +6,16 @@ export default function StorageBar({ used, total }: { used: number; total: numbe
   const isCritical = percentage >= 95;
 
   return (
-    <div className={`bg-white border rounded-lg p-4 ${
-      isCritical ? 'border-red-300' : isWarning ? 'border-amber-300' : 'border-gray-200'
+    <div className={`bg-white dark:bg-gray-900 border rounded-lg p-4 transition-colors ${
+      isCritical ? 'border-red-300 dark:border-red-700' : isWarning ? 'border-amber-300 dark:border-amber-700' : 'border-gray-200 dark:border-gray-700'
     }`}>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-medium text-gray-800">Espacio de almacenamiento</h3>
-        <span className="text-sm text-gray-500">
+        <h3 className="font-medium text-gray-800 dark:text-gray-100">Espacio de almacenamiento</h3>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
           {used} GB / {total} GB
         </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2.5">
+      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
         <div
           className={`h-2.5 rounded-full transition-all duration-500 ${
             isCritical ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-blue-600'
@@ -24,16 +24,16 @@ export default function StorageBar({ used, total }: { used: number; total: numbe
         />
       </div>
       <div className="flex items-center justify-between mt-2">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           {Math.round(percentage)}% utilizado · {Math.max(total - used, 0).toFixed(1)} GB disponibles
         </p>
         {isCritical && (
-          <p className="text-xs text-red-600 font-medium">
+          <p className="text-xs text-red-600 dark:text-red-400 font-medium">
             Almacenamiento casi lleno — elimina archivos
           </p>
         )}
         {!isCritical && isWarning && (
-          <p className="text-xs text-amber-600 font-medium">
+          <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
             Te quedan menos de {Math.round((total - used))} GB
           </p>
         )}

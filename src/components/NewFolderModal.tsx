@@ -22,13 +22,13 @@ export default function NewFolderModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-center gap-3">
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Nombre de la carpeta"
-        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors"
         autoFocus
         onKeyDown={(e) => {
           if (e.key === 'Enter') handleCreate();
@@ -44,7 +44,7 @@ export default function NewFolderModal({ onClose }: { onClose: () => void }) {
       </button>
       <button
         onClick={onClose}
-        className="text-gray-500 hover:text-gray-700 transition-colors"
+        className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
       >
         Cancelar
       </button>

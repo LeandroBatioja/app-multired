@@ -84,7 +84,7 @@ export default function UploadButton() {
           </>
         )}
       </button>
-      <p className="text-xs text-gray-400 mt-1">Tamaño máximo: 100 MB</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Tamaño máximo: 100 MB</p>
 
       {feedback === 'success' && (
         <div className="absolute top-full left-0 mt-2 bg-green-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in z-50">
