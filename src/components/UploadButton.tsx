@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useFiles } from '@/context/FilesContext';
 
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
+
 export default function UploadButton() {
   const { uploadFile } = useFiles();
   const [uploading, setUploading] = useState(false);
-  const [feedback, setFeedback] = useState<'success' | 'error' | 'storage-full' | null>(null);
+  const [feedback, setFeedback] = useState<'success' | 'error' | 'storage-full' | 'file-too-big' | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -20,6 +22,14 @@ export default function UploadButton() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE) {
+      const sizeMB = Math.round(file.size / (1024 * 1024));
+      setFeedback('file-too-big');
+      setErrorMsg(`El archivo pesa ${sizeMB} MB. El tamaño máximo permitido es 100 MB.`);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
 
     setUploading(true);
     setFeedback(null);
@@ -74,6 +84,7 @@ export default function UploadButton() {
           </>
         )}
       </button>
+      <p className="text-xs text-gray-400 mt-1">Tamaño máximo: 100 MB</p>
 
       {feedback === 'success' && (
         <div className="absolute top-full left-0 mt-2 bg-green-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in z-50">
@@ -104,6 +115,26 @@ export default function UploadButton() {
           <button
             onClick={() => setFeedback(null)}
             className="mt-2 text-xs text-red-200 hover:text-white underline"
+          >
+            Cerrar
+          </button>
+        </div>
+      )}
+
+      {feedback === 'file-too-big' && (
+        <div className="absolute top-full left-0 mt-2 bg-amber-600 text-white text-sm px-4 py-3 rounded-lg shadow-lg animate-fade-in z-50 max-w-sm">
+          <div className="flex items-start gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <p className="font-medium">Archivo muy grande</p>
+              <p className="text-amber-200 text-xs mt-1">{errorMsg}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setFeedback(null)}
+            className="mt-2 text-xs text-amber-200 hover:text-white underline"
           >
             Cerrar
           </button>

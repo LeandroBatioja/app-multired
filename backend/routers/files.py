@@ -11,6 +11,7 @@ import mimetypes
 from datetime import datetime
 
 STORAGE_LIMIT_BYTES = 50 * 1024 * 1024 * 1024  # 50 GB
+MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024  # 100 MB
 
 router = APIRouter(prefix="/files", tags=["files"])
 
@@ -60,6 +61,12 @@ async def upload_file(
 ):
     content = await file.read()
     size = len(content)
+
+    if size > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"El archivo '{file.filename}' pesa {round(size / (1024 * 1024), 1)} MB. El tamaño máximo permitido es 100 MB.",
+        )
 
     used = db.query(func.sum(FileModel.size)).filter(
         FileModel.user_id == current_user.id,
