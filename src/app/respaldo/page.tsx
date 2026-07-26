@@ -11,7 +11,7 @@ export default function RespaldoPage() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await filesApi.list();
+      const data = await filesApi.listAll();
       setFiles(data);
     } catch (e) {
       console.error('Error:', e);

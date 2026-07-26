@@ -52,6 +52,31 @@ def list_files(
     return result
 
 
+@router.get("/all", response_model=list[FileResponse])
+def list_all_files(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    files = db.query(FileModel).filter(
+        FileModel.user_id == current_user.id,
+        FileModel.deleted == False,
+    ).all()
+
+    result = []
+    for f in files:
+        shares = db.query(Share).filter(Share.file_id == f.id).all()
+        shared_names = []
+        for s in shares:
+            u = db.query(User).filter(User.id == s.shared_with_id).first()
+            if u:
+                shared_names.append(u.name)
+        file_resp = FileResponse.model_validate(f)
+        file_resp.shared_with = shared_names
+        result.append(file_resp)
+
+    return result
+
+
 @router.post("/upload", response_model=FileResponse)
 async def upload_file(
     file: UploadFile = File(...),

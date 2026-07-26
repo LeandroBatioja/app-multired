@@ -83,6 +83,8 @@ export const filesApi = {
     return request<FileData[]>(`/files${qs ? `?${qs}` : ''}`);
   },
 
+  listAll: () => request<FileData[]>('/files/all'),
+
   upload: async (file: File, folderId?: number | null) => {
     const formData = new FormData();
     formData.append('file', file);
