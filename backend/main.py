@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Archivos Multired API", version="1.0.0")
 
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001")
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://app-multired.vercel.app")
 
 app.add_middleware(
     CORSMiddleware,
