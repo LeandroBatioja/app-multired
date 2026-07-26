@@ -243,49 +243,54 @@ function formatSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-const previewableExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'pdf'];
+const previewableExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'pdf', 'docx', 'xlsx', 'xls'];
+
+const thumbnailIconColors: Record<string, string> = {
+  xlsx: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
+  xls: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
+  pptx: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
+  ppt: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
+  txt: 'text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800',
+  doc: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
+  docx: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
+  zip: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
+  rar: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
+  mp3: 'text-purple-500 bg-purple-50 dark:bg-purple-900/30',
+  mp4: 'text-pink-500 bg-pink-50 dark:bg-pink-900/30',
+};
 
 function FileThumbnail({ file, onClick }: { file: { id: number; name: string; extension: string | null }; onClick: () => void }) {
   const ext = file.extension?.toLowerCase() || '';
+  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'].includes(ext);
 
-  if (previewableExtensions.includes(ext)) {
+  if (isImage) {
     return (
       <div
         onClick={onClick}
         className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all"
       >
-        {ext === 'pdf' ? (
-          <div className="w-full h-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </div>
-        ) : (
-          <img
-            src={filesApi.getPreviewUrl(file.id)}
-            alt={file.name}
-            className="w-full h-full object-cover"
-          />
-        )}
+        <img
+          src={filesApi.getPreviewUrl(file.id)}
+          alt={file.name}
+          className="w-full h-full object-cover"
+        />
       </div>
     );
   }
 
-  const iconColors: Record<string, string> = {
-    xlsx: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
-    xls: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30',
-    pptx: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
-    ppt: 'text-orange-500 bg-orange-50 dark:bg-orange-900/30',
-    txt: 'text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800',
-    doc: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
-    docx: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30',
-    zip: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
-    rar: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/30',
-    mp3: 'text-purple-500 bg-purple-50 dark:bg-purple-900/30',
-    mp4: 'text-pink-500 bg-pink-50 dark:bg-pink-900/30',
-  };
+  if (previewableExtensions.includes(ext)) {
+    const colorClass = thumbnailIconColors[ext] || 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800';
+    return (
+      <div
+        onClick={onClick}
+        className={`w-16 h-16 flex-shrink-0 rounded-lg flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all ${colorClass}`}
+      >
+        <span className="text-xs font-bold uppercase">{ext}</span>
+      </div>
+    );
+  }
 
-  const colorClass = iconColors[ext] || 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800';
+  const colorClass = thumbnailIconColors[ext] || 'text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800';
 
   return (
     <div className={`w-16 h-16 flex-shrink-0 rounded-lg flex items-center justify-center ${colorClass}`}>

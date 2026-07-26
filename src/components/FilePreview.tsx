@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { filesApi } from '@/lib/api';
 
 interface FilePreviewProps {
@@ -15,6 +16,8 @@ export default function FilePreview({ fileId, fileName, extension, onClose }: Fi
   const ext = extension?.toLowerCase() || '';
   const isImage = imageExtensions.includes(ext);
   const isPdf = ext === 'pdf';
+  const isDocx = ext === 'docx';
+  const isExcel = ext === 'xlsx' || ext === 'xls';
   const previewUrl = filesApi.getPreviewUrl(fileId);
   const downloadUrl = filesApi.getDownloadUrl(fileId);
 
@@ -60,6 +63,10 @@ export default function FilePreview({ fileId, fileName, extension, onClose }: Fi
               className="w-full h-[70vh] rounded-lg border border-gray-200 dark:border-gray-600"
               title={fileName}
             />
+          ) : isDocx ? (
+            <DocxPreview url={previewUrl} />
+          ) : isExcel ? (
+            <ExcelPreview url={previewUrl} />
           ) : (
             <div className="text-center py-12">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
@@ -80,6 +87,171 @@ export default function FilePreview({ fileId, fileName, extension, onClose }: Fi
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function DocxPreview({ url }: { url: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function render() {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error al descargar');
+        const blob = await res.blob();
+        const buffer = await blob.arrayBuffer();
+
+        if (cancelled) return;
+
+        const docx = await import('docx-preview');
+        if (cancelled) return;
+
+        if (containerRef.current) {
+          containerRef.current.innerHTML = '';
+          await docx.renderAsync(buffer, containerRef.current);
+        }
+        if (!cancelled) setLoading(false);
+      } catch {
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    }
+
+    render();
+    return () => { cancelled = true; };
+  }, [url]);
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 dark:text-gray-400 mb-2">No se pudo cargar la vista previa del documento</p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm">Intenta descargar el archivo para verlo</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-h-[70vh] overflow-auto">
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mr-3" />
+          <span className="text-gray-500 dark:text-gray-400">Cargando documento...</span>
+        </div>
+      )}
+      <div
+        ref={containerRef}
+        className={`docx-preview bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm ${loading ? 'hidden' : ''}`}
+        style={{ fontSize: '14px', lineHeight: '1.6' }}
+      />
+    </div>
+  );
+}
+
+function ExcelPreview({ url }: { url: string }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [html, setHtml] = useState('');
+  const [sheetNames, setSheetNames] = useState<string[]>([]);
+  const [activeSheet, setActiveSheet] = useState(0);
+  const workbookRef = useRef<any>(null);
+
+  const renderSheet = useCallback((workbook: any, index: number) => {
+    const name = workbook.SheetNames[index];
+    if (!name) return;
+    const sheet = workbook.Sheets[name];
+    const newHtml = workbook.utils.sheet_to_html(sheet);
+    setHtml(newHtml);
+    setActiveSheet(index);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function render() {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error al descargar');
+        const blob = await res.blob();
+        const buffer = await blob.arrayBuffer();
+
+        if (cancelled) return;
+
+        const XLSX = await import('xlsx');
+        if (cancelled) return;
+
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        if (cancelled) return;
+
+        workbookRef.current = workbook;
+        setSheetNames(workbook.SheetNames);
+        renderSheet(workbook, 0);
+        setLoading(false);
+      } catch {
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    }
+
+    render();
+    return () => { cancelled = true; };
+  }, [url, renderSheet]);
+
+  const handleSheetChange = (index: number) => {
+    if (workbookRef.current) {
+      renderSheet(workbookRef.current, index);
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 dark:text-gray-400 mb-2">No se pudo cargar la vista previa de la hoja de cálculo</p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm">Intenta descargar el archivo para verlo</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-h-[70vh] overflow-auto">
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mr-3" />
+          <span className="text-gray-500 dark:text-gray-400">Cargando hoja de cálculo...</span>
+        </div>
+      ) : (
+        <>
+          {sheetNames.length > 1 && (
+            <div className="flex gap-1 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2 overflow-x-auto">
+              {sheetNames.map((name, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSheetChange(i)}
+                  className={`px-3 py-1 text-sm rounded-md whitespace-nowrap transition-colors ${
+                    i === activeSheet
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          )}
+          <div
+            className="excel-preview bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-auto"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </>
+      )}
     </div>
   );
 }
